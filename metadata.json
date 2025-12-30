@@ -1,0 +1,7 @@
+{
+  "name": "Darts Pro - Magyar Pontszámláló",
+  "description": "Egy professzionális magyar nyelvű darts pontszámláló alkalmazás 501-es játékhoz, interaktív táblával és AI alapú hangvezérléssel.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
