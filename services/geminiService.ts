@@ -1,15 +1,27 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 // Ensure typescript knows about process.env
 declare const process: { env: { API_KEY: string } };
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to initialize AI client only when needed (Lazy Loading)
+// This prevents the "White/Dark Screen of Death" if the API key is missing on initial load
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    console.warn("API Key is missing! Check your environment variables.");
+    // Return a dummy or handle error gracefully depending on logic, 
+    // but throwing here catches it in the try/catch blocks of the functions below.
+    throw new Error("Gemini API Key is missing");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export async function getCheckoutAdvice(remainingScore: number): Promise<string> {
   if (remainingScore > 170) return "Dobj triplákat (T20), hogy csökkentsd a pontszámod!";
   
   try {
+    const ai = getAiClient();
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Adj tanácsot egy darts játékosnak. A hátralévő pontszám: ${remainingScore}. 
@@ -28,6 +40,7 @@ export async function getCheckoutAdvice(remainingScore: number): Promise<string>
 
 export async function analyzeDartboardImage(base64Image: string): Promise<{ score: number, label: string } | null> {
   try {
+    const ai = getAiClient();
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-latest",
       contents: {
