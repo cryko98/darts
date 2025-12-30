@@ -309,8 +309,8 @@ Minden más esetben ne csinálj semmit.`,
             if (msg.toolCall?.functionCalls) {
               for (const fc of msg.toolCall.functionCalls) {
                 if (fc.name === 'submitScore') {
-                  const p = Number(fc.args['points']);
-                  const n = String(fc.args['playerName']).toLowerCase().trim();
+                  const p = Number(fc.args?.['points']);
+                  const n = String(fc.args?.['playerName'] || '').toLowerCase().trim();
                   const currentActive = activePlayerNameRef.current.toLowerCase().trim();
 
                   if (!isNaN(p) && n === currentActive) {
